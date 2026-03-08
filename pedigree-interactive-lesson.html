@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedigree Analysis - Interactive Lesson</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            min-height: 100vh;
+            color: #1565c0;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+
+        header {
+            text-align: center; padding: 25px;
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            color: white; border-radius: 15px; margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        header h1 { font-size: 2.2rem; margin-bottom: 8px; }
+        header p { font-size: 1.1rem; opacity: 0.9; }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px;
+            background: white; padding: 10px; border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .nav-tab {
+            padding: 12px 20px; border: none; background: #e3f2fd;
+            color: #1565c0; cursor: pointer; border-radius: 8px;
+            font-size: 0.95rem; font-weight: 500; transition: all 0.3s ease;
+        }
+        .nav-tab:hover { background: #bbdefb; }
+        .nav-tab.active {
+            background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
+            color: white;
+        }
+        .nav-tab.completed { position: relative; }
+        .nav-tab.completed::after { content: ' \2713'; color: #4caf50; }
+        .nav-tab.active.completed::after { color: #a5d6a7; }
+
+        /* Sections */
+        .section {
+            display: none; background: white; padding: 30px;
+            border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .section.active { display: block; }
+        .section h2 {
+            color: #0d47a1; margin-bottom: 20px; padding-bottom: 10px;
+            border-bottom: 3px solid #1565c0;
+        }
+        .section h3 { color: #1565c0; margin: 20px 0 12px 0; }
+
+        /* Info Boxes */
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px; border-radius: 12px; margin: 15px 0;
+            border-left: 5px solid #1565c0;
+        }
+        .info-box.green {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left-color: #2e7d32;
+        }
+        .info-box.amber {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-left-color: #f57f17;
+        }
+        .info-box.purple {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border-left-color: #7b1fa2;
+        }
+
+        /* Key Term */
+        .key-term {
+            font-weight: bold; color: #0d47a1;
+            background: #e3f2fd; padding: 2px 6px; border-radius: 4px;
+        }
+
+        /* Vocab Grid */
+        .vocab-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 12px; margin: 15px 0;
+        }
+        .vocab-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 14px; border-radius: 10px; border-left: 4px solid #1565c0;
+        }
+        .vocab-card strong { color: #0d47a1; }
+
+        /* Symbol Grid */
+        .symbol-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .symbol-card {
+            text-align: center; padding: 20px; background: #f5f5f5;
+            border-radius: 12px; border: 2px solid #e0e0e0;
+            transition: transform 0.2s;
+        }
+        .symbol-card:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .symbol-card svg { margin-bottom: 10px; }
+        .symbol-card p { color: #333; font-weight: 500; font-size: 0.95rem; }
+
+        /* Questions */
+        .question-block {
+            background: #fafafa; border: 2px solid #e0e0e0;
+            border-radius: 12px; padding: 20px; margin: 20px 0;
+        }
+        .question-block.answered-correct { border-color: #4caf50; background: #f1f8e9; }
+        .question-block.answered-incorrect { border-color: #e53935; background: #fbe9e7; }
+        .question-label {
+            font-weight: 700; color: #0d47a1; margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+        .question-text { color: #333; margin-bottom: 15px; line-height: 1.6; }
+
+        /* Multiple Choice */
+        .mc-option {
+            display: block; width: 100%; text-align: left;
+            padding: 12px 16px; margin: 6px 0; border: 2px solid #ccc;
+            border-radius: 8px; background: white; cursor: pointer;
+            font-size: 0.95rem; color: #333; transition: all 0.2s;
+        }
+        .mc-option:hover:not(:disabled) { background: #e3f2fd; border-color: #1565c0; }
+        .mc-option:disabled { cursor: default; opacity: 0.7; }
+        .mc-option.selected-correct {
+            background: #e8f5e9; border-color: #4caf50; color: #1b5e20; opacity: 1;
+        }
+        .mc-option.selected-incorrect {
+            background: #ffebee; border-color: #e53935; color: #b71c1c; opacity: 1;
+        }
+        .mc-option.correct-answer {
+            background: #e8f5e9; border-color: #4caf50; opacity: 1;
+        }
+
+        /* Text Input */
+        .text-input {
+            width: 100%; padding: 10px 14px; border: 2px solid #ccc;
+            border-radius: 8px; font-size: 0.95rem; margin: 8px 0;
+            transition: border-color 0.2s;
+        }
+        .text-input:focus { outline: none; border-color: #1565c0; }
+        .submit-btn {
+            padding: 10px 24px; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            color: white; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-size: 0.95rem;
+        }
+        .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+        .submit-btn:disabled { background: #bbb; cursor: default; transform: none; box-shadow: none; }
+
+        /* Explanation */
+        .explanation {
+            display: none; margin-top: 15px; padding: 15px;
+            border-radius: 10px; line-height: 1.6;
+        }
+        .explanation.correct {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-left: 4px solid #4caf50; color: #1b5e20;
+        }
+        .explanation.incorrect {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-left: 4px solid #e53935; color: #b71c1c;
+        }
+        .explanation.show { display: block; }
+
+        /* SVG Pedigree */
+        .pedigree-container {
+            text-align: center; margin: 20px 0; overflow-x: auto;
+        }
+        .pedigree-container svg {
+            max-width: 100%; height: auto;
+        }
+
+        /* Steps */
+        .step-list { list-style: none; counter-reset: steps; padding: 0; }
+        .step-list li {
+            counter-increment: steps; padding: 12px 12px 12px 50px;
+            margin: 8px 0; background: #f5f5f5; border-radius: 8px;
+            position: relative; line-height: 1.5; color: #333;
+        }
+        .step-list li::before {
+            content: counter(steps);
+            position: absolute; left: 12px; top: 12px;
+            width: 28px; height: 28px; background: #1565c0;
+            color: white; border-radius: 50%; text-align: center;
+            line-height: 28px; font-weight: bold; font-size: 0.9rem;
+        }
+
+        /* Inheritance pattern cards */
+        .pattern-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px; margin: 20px 0;
+        }
+        .pattern-card {
+            padding: 20px; border-radius: 12px; border: 2px solid #e0e0e0;
+            background: white;
+        }
+        .pattern-card h4 { color: #0d47a1; margin-bottom: 8px; font-size: 1.1rem; }
+        .pattern-card ul { padding-left: 20px; color: #333; line-height: 1.7; }
+
+        /* Copy Section */
+        .copy-section {
+            margin-top: 30px; padding: 25px; border-top: 3px solid #1565c0;
+            background: #f5f5f5; border-radius: 0 0 15px 15px;
+        }
+        .copy-section h3 { margin-top: 0; }
+        .copy-area {
+            display: none; background: white; border: 2px solid #ccc;
+            border-radius: 8px; padding: 15px; margin: 15px 0;
+            max-height: 400px; overflow-y: auto; white-space: pre-wrap;
+            font-family: 'Courier New', monospace; font-size: 0.85rem;
+            color: #333; line-height: 1.6;
+        }
+        .copy-area.show { display: block; }
+        .btn-copy {
+            padding: 12px 28px; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            color: white; font-weight: 600; cursor: pointer;
+            font-size: 1rem; transition: all 0.2s; margin-right: 10px;
+        }
+        .btn-copy:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
+        .btn-copy.green { background: linear-gradient(135deg, #2e7d32, #1b5e20); }
+        .copy-success {
+            display: inline-block; color: #2e7d32; font-weight: 600;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .copy-success.visible { opacity: 1; }
+
+        /* Navigation buttons */
+        .section-nav {
+            display: flex; justify-content: space-between; margin-top: 30px;
+            padding-top: 20px; border-top: 2px solid #e0e0e0;
+        }
+        .nav-btn {
+            padding: 12px 24px; border: none; border-radius: 8px;
+            font-weight: 600; cursor: pointer; transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+        .nav-btn.prev { background: #e0e0e0; color: #333; }
+        .nav-btn.next {
+            background: linear-gradient(135deg, #1565c0, #0d47a1); color: white;
+        }
+        .nav-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.6rem; }
+            .section { padding: 20px; }
+            .nav-tab { padding: 10px 14px; font-size: 0.85rem; }
+            .symbol-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        }
+
+        /* Tip callout */
+        .tip {
+            background: #fff3e0; border-left: 4px solid #ff9800;
+            padding: 12px 16px; border-radius: 0 8px 8px 0;
+            margin: 15px 0; color: #e65100;
+        }
+        .tip strong { color: #bf360c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Pedigree Analysis</h1>
+        <p>AP &amp; IB Biology &mdash; Interpreting Genetic Inheritance Patterns</p>
+    </header>
+
+    <!-- Navigation -->
+    <div class="nav-tabs" id="navTabs">
+        <button class="nav-tab active" onclick="showSection(0)">Introduction</button>
+        <button class="nav-tab" onclick="showSection(1)">Interactive Lesson</button>
+        <button class="nav-tab" onclick="showSection(2)">Practice</button>
+        <button class="nav-tab" onclick="showSection(3)">Challenge</button>
+    </div>
+
+    <!-- ==================== SECTION 0: INTRODUCTION ==================== -->
+    <div class="section active" id="section-0">
+        <h2>What Is a Pedigree?</h2>
+
+        <p style="line-height:1.7; color:#333; margin-bottom:15px;">
+            A <span class="key-term">pedigree</span> is a diagram that shows the occurrence of a phenotype (observable trait) across multiple generations of a family. Geneticists, doctors, and genetic counselors use pedigrees to track how traits&mdash;especially inherited disorders&mdash;are passed from parents to offspring.
+        </p>
+
+        <div class="info-box">
+            <strong>Why do pedigrees matter?</strong><br>
+            Pedigrees allow us to determine whether a trait is <em>dominant</em> or <em>recessive</em>, whether it is <em>autosomal</em> or <em>sex-linked</em>, and to predict the probability that future offspring will inherit a particular condition.
+        </div>
+
+        <h3>Key Vocabulary</h3>
+        <div class="vocab-grid">
+            <div class="vocab-card"><strong>Pedigree</strong><br>A chart showing the inheritance of a trait over several generations.</div>
+            <div class="vocab-card"><strong>Phenotype</strong><br>The observable expression of a trait (e.g., black coat, dimples, disease symptoms).</div>
+            <div class="vocab-card"><strong>Genotype</strong><br>The genetic makeup of an individual (e.g., <em>Bb</em>, <em>bb</em>).</div>
+            <div class="vocab-card"><strong>Carrier</strong><br>An individual who is heterozygous for a recessive trait&mdash;they carry the allele but do not show the phenotype.</div>
+            <div class="vocab-card"><strong>Autosomal</strong><br>A trait located on one of the 22 non-sex chromosomes (chromosomes 1&ndash;22).</div>
+            <div class="vocab-card"><strong>Sex-linked</strong><br>A trait located on a sex chromosome (usually the X chromosome).</div>
+            <div class="vocab-card"><strong>Dominant</strong><br>A trait expressed when at least one dominant allele is present (only one copy needed).</div>
+            <div class="vocab-card"><strong>Recessive</strong><br>A trait expressed only when two copies of the recessive allele are present (homozygous recessive).</div>
+        </div>
+
+        <h3>Pedigree Symbols at a Glance</h3>
+        <p style="color:#333; margin-bottom:10px;">Pedigrees use a standardized set of symbols so that any scientist can read them:</p>
+
+        <div class="symbol-grid">
+            <div class="symbol-card">
+                <svg width="60" height="60"><rect x="10" y="10" width="40" height="40" fill="none" stroke="#333" stroke-width="3"/></svg>
+                <p>Unaffected Male</p>
+            </div>
+            <div class="symbol-card">
+                <svg width="60" height="60"><circle cx="30" cy="30" r="20" fill="none" stroke="#333" stroke-width="3"/></svg>
+                <p>Unaffected Female</p>
+            </div>
+            <div class="symbol-card">
+                <svg width="60" height="60"><rect x="10" y="10" width="40" height="40" fill="#555" stroke="#333" stroke-width="3"/></svg>
+                <p>Affected Male</p>
+            </div>
+            <div class="symbol-card">
+                <svg width="60" height="60"><circle cx="30" cy="30" r="20" fill="#555" stroke="#333" stroke-width="3"/></svg>
+                <p>Affected Female</p>
+            </div>
+            <div class="symbol-card">
+                <svg width="140" height="60">
+                    <rect x="10" y="15" width="35" height="35" fill="none" stroke="#333" stroke-width="3"/>
+                    <circle cx="100" cy="32" r="18" fill="none" stroke="#333" stroke-width="3"/>
+                    <line x1="45" y1="32" x2="82" y2="32" stroke="#333" stroke-width="3"/>
+                </svg>
+                <p>Mating Pair</p>
+            </div>
+            <div class="symbol-card">
+                <svg width="160" height="90">
+                    <line x1="30" y1="10" x2="130" y2="10" stroke="#333" stroke-width="3"/>
+                    <line x1="30" y1="10" x2="30" y2="30" stroke="#333" stroke-width="3"/>
+                    <line x1="80" y1="10" x2="80" y2="30" stroke="#333" stroke-width="3"/>
+                    <line x1="130" y1="10" x2="130" y2="30" stroke="#333" stroke-width="3"/>
+                    <rect x="13" y="30" width="34" height="34" fill="none" stroke="#333" stroke-width="3"/>
+                    <circle cx="80" cy="47" r="17" fill="none" stroke="#333" stroke-width="3"/>
+                    <rect x="113" y="30" width="34" height="34" fill="#555" stroke="#333" stroke-width="3"/>
+                </svg>
+                <p>Offspring (siblings)</p>
+            </div>
+        </div>
+
+        <div class="tip">
+            <strong>Tip:</strong> Individuals in the same horizontal row of a pedigree belong to the same generation. Vertical lines connect parents to their children.
+        </div>
+
+        <div class="section-nav">
+            <span></span>
+            <button class="nav-btn next" onclick="showSection(1)">Next: Interactive Lesson &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 1: INTERACTIVE LESSON ==================== -->
+    <div class="section" id="section-1">
+        <h2>How to Read &amp; Build a Pedigree</h2>
+
+        <h3>Step-by-Step: Constructing a Pedigree</h3>
+        <ol class="step-list">
+            <li><strong>Identify the trait being studied.</strong> Determine which phenotype you are tracking (e.g., a genetic disorder, a physical trait like coat color).</li>
+            <li><strong>Gather family information.</strong> Collect data on which individuals are affected and unaffected across at least two&ndash;three generations.</li>
+            <li><strong>Draw standardized symbols.</strong> Use squares for males, circles for females. Shade affected individuals; leave unaffected ones open.</li>
+            <li><strong>Connect mating pairs.</strong> A horizontal line between a male and female represents a mating. A vertical &ldquo;T&rdquo; shape drops down to offspring.</li>
+            <li><strong>Arrange by generation.</strong> Place each generation on its own horizontal row. The oldest generation goes at the top.</li>
+            <li><strong>Use a &ldquo;comb&rdquo; for siblings.</strong> A horizontal line across the top of several offspring lines shows they share the same biological parents.</li>
+            <li><strong>Add names or numbers.</strong> Label individuals so you can refer to them when analyzing the pedigree.</li>
+        </ol>
+
+        <h3>Determining Inheritance Patterns</h3>
+        <p style="color:#333; line-height:1.7; margin-bottom:15px;">Once a pedigree is drawn, you can analyze it to determine <em>how</em> the trait is inherited. There are four major patterns to consider:</p>
+
+        <div class="pattern-grid">
+            <div class="pattern-card" style="border-color:#1565c0;">
+                <h4>Autosomal Dominant</h4>
+                <ul>
+                    <li>Affected individuals appear in <strong>every generation</strong> (no skipping).</li>
+                    <li>An affected child must have <strong>at least one affected parent</strong>.</li>
+                    <li>Trait affects males and females <strong>equally</strong>.</li>
+                    <li>Unaffected parents do <strong>not</strong> produce affected children.</li>
+                </ul>
+            </div>
+            <div class="pattern-card" style="border-color:#2e7d32;">
+                <h4>Autosomal Recessive</h4>
+                <ul>
+                    <li>Trait can <strong>skip generations</strong>.</li>
+                    <li>Affected children can come from <strong>two unaffected (carrier) parents</strong>.</li>
+                    <li>Trait affects males and females <strong>equally</strong>.</li>
+                    <li>If both parents are carriers: expect roughly <strong>1/4 affected offspring</strong>.</li>
+                </ul>
+            </div>
+            <div class="pattern-card" style="border-color:#7b1fa2;">
+                <h4>X-linked Recessive</h4>
+                <ul>
+                    <li><strong>More males affected</strong> than females.</li>
+                    <li>Affected males receive the allele from their <strong>carrier mother</strong>.</li>
+                    <li>An affected father passes the allele to <strong>all daughters</strong> (carriers) but <strong>no sons</strong>.</li>
+                    <li>Trait often skips generations through carrier females.</li>
+                </ul>
+            </div>
+            <div class="pattern-card" style="border-color:#e65100;">
+                <h4>X-linked Dominant</h4>
+                <ul>
+                    <li>Affected fathers pass the trait to <strong>all daughters</strong> and <strong>no sons</strong>.</li>
+                    <li>Affected mothers can pass the trait to <strong>sons and daughters</strong>.</li>
+                    <li>More females tend to be affected (they have two X chromosomes).</li>
+                    <li>Does <strong>not</strong> skip generations.</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Quick-Check Rules</h3>
+        <div class="info-box green">
+            <strong>Is it Dominant or Recessive?</strong><br>
+            Ask: &ldquo;Can two <em>unaffected</em> parents have an <em>affected</em> child?&rdquo;<br>
+            &bull; <strong>Yes</strong> &rarr; The trait is likely <strong>recessive</strong> (both parents are carriers).<br>
+            &bull; <strong>No</strong> &rarr; The trait is likely <strong>dominant</strong>.
+        </div>
+
+        <div class="info-box purple">
+            <strong>Is it Autosomal or X-linked?</strong><br>
+            Ask: &ldquo;Are males affected much more often than females?&rdquo;<br>
+            &bull; <strong>Yes</strong> &rarr; Consider <strong>X-linked</strong> inheritance.<br>
+            &bull; <strong>No</strong> (roughly equal) &rarr; Likely <strong>autosomal</strong>.
+        </div>
+
+        <h3>Interactive Check: Identify the Symbol</h3>
+        <!-- Quick knowledge check questions embedded in the lesson -->
+        <div class="question-block" id="lesson-q1">
+            <div class="question-label">Lesson Check 1</div>
+            <div class="question-text">What does a <strong>shaded circle</strong> represent in a pedigree?</div>
+            <button class="mc-option" onclick="checkMC('lesson-q1', this, false)">An unaffected male</button>
+            <button class="mc-option" onclick="checkMC('lesson-q1', this, false)">A carrier female</button>
+            <button class="mc-option" onclick="checkMC('lesson-q1', this, true)">An affected female</button>
+            <button class="mc-option" onclick="checkMC('lesson-q1', this, false)">An affected male</button>
+            <div class="explanation correct" id="lesson-q1-correct">Correct! A circle represents a female, and shading means the individual is <strong>affected</strong>&mdash;they express the trait being studied.</div>
+            <div class="explanation incorrect" id="lesson-q1-incorrect">Not quite. Remember: <strong>circles = female</strong>, <strong>squares = male</strong>. Shading means the individual is <strong>affected</strong>. A shaded circle = an affected female.</div>
+        </div>
+
+        <div class="question-block" id="lesson-q2">
+            <div class="question-label">Lesson Check 2</div>
+            <div class="question-text">Two unaffected parents have an affected child. What does this tell you about the inheritance pattern?</div>
+            <button class="mc-option" onclick="checkMC('lesson-q2', this, false)">The trait is autosomal dominant</button>
+            <button class="mc-option" onclick="checkMC('lesson-q2', this, true)">The trait is recessive (both parents are carriers)</button>
+            <button class="mc-option" onclick="checkMC('lesson-q2', this, false)">The trait is X-linked dominant</button>
+            <button class="mc-option" onclick="checkMC('lesson-q2', this, false)">This is not genetically possible</button>
+            <div class="explanation correct" id="lesson-q2-correct">Correct! When two unaffected parents produce an affected child, the trait must be <strong>recessive</strong>. Both parents are heterozygous carriers (e.g., <em>Aa</em> &times; <em>Aa</em>), and the affected child is homozygous recessive (<em>aa</em>).</div>
+            <div class="explanation incorrect" id="lesson-q2-incorrect">Not quite. If the trait were dominant, at least one parent would need to be affected to pass it on. Since both parents are unaffected, they must each carry one hidden recessive allele&mdash;the trait is <strong>recessive</strong>. Both parents are carriers (<em>Aa</em>).</div>
+        </div>
+
+        <div class="question-block" id="lesson-q3">
+            <div class="question-label">Lesson Check 3</div>
+            <div class="question-text">A genetic condition appears almost exclusively in males and is passed from carrier mothers to sons. What inheritance pattern does this suggest?</div>
+            <button class="mc-option" onclick="checkMC('lesson-q3', this, false)">Autosomal dominant</button>
+            <button class="mc-option" onclick="checkMC('lesson-q3', this, false)">Autosomal recessive</button>
+            <button class="mc-option" onclick="checkMC('lesson-q3', this, true)">X-linked recessive</button>
+            <button class="mc-option" onclick="checkMC('lesson-q3', this, false)">X-linked dominant</button>
+            <div class="explanation correct" id="lesson-q3-correct">Correct! X-linked recessive traits predominantly affect <strong>males</strong> because they only have one X chromosome. If their single X carries the recessive allele, they express the trait. Females would need <em>two</em> copies to be affected, so they are usually just carriers.</div>
+            <div class="explanation incorrect" id="lesson-q3-incorrect">Think again. When a trait overwhelmingly affects males and is transmitted through carrier mothers, it is on the <strong>X chromosome</strong>. Males (XY) only need one copy of the recessive allele on their X to be affected, making this <strong>X-linked recessive</strong>.</div>
+        </div>
+
+        <div class="section-nav">
+            <button class="nav-btn prev" onclick="showSection(0)">&larr; Introduction</button>
+            <button class="nav-btn next" onclick="showSection(2)">Next: Practice &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 2: PRACTICE ==================== -->
+    <div class="section" id="section-2">
+        <h2>Practice Problems</h2>
+        <p style="color:#333; margin-bottom:10px;">Use the pedigrees below to answer each question. After you submit your answer, read the explanation carefully&mdash;it will walk you through the reasoning.</p>
+
+        <!-- ===== PEDIGREE 1: Ruben & Sydney Family ===== -->
+        <h3>Pedigree 1 &mdash; Ruben &amp; Sydney&rsquo;s Family</h3>
+        <div class="info-box">This pedigree tracks an inherited medical condition through four generations. Study which individuals are affected (shaded) and which are unaffected (open).</div>
+
+        <div class="pedigree-container">
+            <svg viewBox="0 0 780 420" width="780" height="420" style="font-family:'Segoe UI',sans-serif; font-size:12px;">
+                <!-- ===== GENERATION I: Ruben x Sydney ===== -->
+                <rect x="302" y="15" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="320" y="67" text-anchor="middle" fill="#333" font-size="11">Ruben</text>
+                <circle cx="440" cy="33" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="440" y="67" text-anchor="middle" fill="#333" font-size="11">Sydney</text>
+                <!-- mating line -->
+                <line x1="338" y1="33" x2="422" y2="33" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to sibling comb -->
+                <line x1="380" y1="33" x2="380" y2="82" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION II ===== -->
+                <!-- Sibling comb: ONLY Janet, Max, Carlos are Ruben & Sydney's children -->
+                <line x1="270" y1="82" x2="490" y2="82" stroke="#333" stroke-width="2.5"/>
+                <!-- Janet (child - on comb) -->
+                <line x1="270" y1="82" x2="270" y2="97" stroke="#333" stroke-width="2.5"/>
+                <circle cx="270" cy="115" r="18" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="270" y="149" text-anchor="middle" fill="#333" font-size="11">Janet</text>
+                <!-- Max (child - on comb) -->
+                <line x1="380" y1="82" x2="380" y2="97" stroke="#333" stroke-width="2.5"/>
+                <rect x="362" y="97" width="36" height="36" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="380" y="149" text-anchor="middle" fill="#333" font-size="11">Max</text>
+                <!-- Carlos (child - on comb) -->
+                <line x1="490" y1="82" x2="490" y2="97" stroke="#333" stroke-width="2.5"/>
+                <rect x="472" y="97" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="490" y="149" text-anchor="middle" fill="#333" font-size="11">Carlos</text>
+
+                <!-- Sam (MARRIED IN - NO drop from comb) -->
+                <rect x="122" y="97" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="140" y="149" text-anchor="middle" fill="#333" font-size="11">Sam</text>
+                <!-- mating line Sam -- Janet -->
+                <line x1="158" y1="115" x2="252" y2="115" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen III left -->
+                <line x1="205" y1="115" x2="205" y2="172" stroke="#333" stroke-width="2.5"/>
+
+                <!-- Juliet (MARRIED IN - NO drop from comb) -->
+                <circle cx="620" cy="115" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="620" y="149" text-anchor="middle" fill="#333" font-size="11">Juliet</text>
+                <!-- mating line Carlos -- Juliet -->
+                <line x1="508" y1="115" x2="602" y2="115" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen III right -->
+                <line x1="555" y1="115" x2="555" y2="172" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION III LEFT (Sam & Janet's children) ===== -->
+                <!-- Sibling comb: ONLY Amanda, Ethan, Simone are their children -->
+                <line x1="100" y1="172" x2="280" y2="172" stroke="#333" stroke-width="2.5"/>
+                <!-- Amanda (child) -->
+                <line x1="100" y1="172" x2="100" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="100" cy="205" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="100" y="239" text-anchor="middle" fill="#333" font-size="11">Amanda</text>
+                <!-- Ethan (child) -->
+                <line x1="190" y1="172" x2="190" y2="187" stroke="#333" stroke-width="2.5"/>
+                <rect x="172" y="187" width="36" height="36" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="190" y="239" text-anchor="middle" fill="#333" font-size="11">Ethan</text>
+                <!-- Simone (child) -->
+                <line x1="280" y1="172" x2="280" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="280" cy="205" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="280" y="239" text-anchor="middle" fill="#333" font-size="11">Simone</text>
+
+                <!-- Calvin (MARRIED IN - NO drop from comb) -->
+                <rect x="352" y="187" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="370" y="239" text-anchor="middle" fill="#333" font-size="11">Calvin</text>
+                <!-- mating line Simone -- Calvin -->
+                <line x1="298" y1="205" x2="352" y2="205" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen IV left -->
+                <line x1="325" y1="205" x2="325" y2="262" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION III RIGHT (Carlos & Juliet's children) ===== -->
+                <!-- Sibling comb: ONLY Sarah and Anna are their children -->
+                <line x1="490" y1="172" x2="660" y2="172" stroke="#333" stroke-width="2.5"/>
+                <!-- Sarah (child) -->
+                <line x1="490" y1="172" x2="490" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="490" cy="205" r="18" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="490" y="239" text-anchor="middle" fill="#333" font-size="11">Sarah</text>
+                <!-- Anna (child) -->
+                <line x1="660" y1="172" x2="660" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="660" cy="205" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="660" y="239" text-anchor="middle" fill="#333" font-size="11">Anna</text>
+
+                <!-- Luke (MARRIED IN - NO drop from comb) -->
+                <rect x="557" y="187" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="575" y="239" text-anchor="middle" fill="#333" font-size="11">Luke</text>
+                <!-- mating line Sarah -- Luke -->
+                <line x1="508" y1="205" x2="557" y2="205" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen IV right -->
+                <line x1="533" y1="205" x2="533" y2="262" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION IV LEFT (Simone & Calvin's children) ===== -->
+                <line x1="265" y1="262" x2="385" y2="262" stroke="#333" stroke-width="2.5"/>
+                <line x1="265" y1="262" x2="265" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="265" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="265" y="329" text-anchor="middle" fill="#333" font-size="11">Emily</text>
+                <line x1="325" y1="262" x2="325" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="325" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="325" y="329" text-anchor="middle" fill="#333" font-size="11">Lynn</text>
+                <line x1="385" y1="262" x2="385" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="385" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="385" y="329" text-anchor="middle" fill="#333" font-size="11">Kathy</text>
+
+                <!-- ===== GENERATION IV RIGHT (Sarah & Luke's children) ===== -->
+                <line x1="473" y1="262" x2="593" y2="262" stroke="#333" stroke-width="2.5"/>
+                <line x1="473" y1="262" x2="473" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="473" cy="295" r="18" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="473" y="329" text-anchor="middle" fill="#333" font-size="11">Cindy</text>
+                <line x1="533" y1="262" x2="533" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="533" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="533" y="329" text-anchor="middle" fill="#333" font-size="11">Nicole</text>
+                <line x1="593" y1="262" x2="593" y2="277" stroke="#333" stroke-width="2.5"/>
+                <rect x="575" y="277" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="593" y="329" text-anchor="middle" fill="#333" font-size="11">James</text>
+
+                <!-- KEY -->
+                <rect x="590" y="340" width="185" height="78" fill="#f9f9f9" stroke="#ccc" stroke-width="1.5" rx="8"/>
+                <text x="682" y="356" text-anchor="middle" font-weight="bold" fill="#333" font-size="11">KEY</text>
+                <!-- Row 1 -->
+                <rect x="602" y="363" width="14" height="14" fill="none" stroke="#333" stroke-width="2"/>
+                <text x="622" y="375" fill="#333" font-size="9">Unaff. Male</text>
+                <rect x="698" y="363" width="14" height="14" fill="#555" stroke="#333" stroke-width="2"/>
+                <text x="718" y="375" fill="#333" font-size="9">Aff. Male</text>
+                <!-- Row 2 -->
+                <circle cx="609" cy="396" r="7" fill="none" stroke="#333" stroke-width="2"/>
+                <text x="622" y="400" fill="#333" font-size="9">Unaff. Female</text>
+                <circle cx="705" cy="396" r="7" fill="#555" stroke="#333" stroke-width="2"/>
+                <text x="718" y="400" fill="#333" font-size="9">Aff. Female</text>
+            </svg>
+        </div>
+
+        <!-- Practice Q1 -->
+        <div class="question-block" id="pq1">
+            <div class="question-label">Practice Question 1</div>
+            <div class="question-text">Looking at Pedigree 1, is the trait (condition) most likely <strong>dominant</strong> or <strong>recessive</strong>? Explain your reasoning.</div>
+            <textarea class="text-input" id="pq1-input" rows="3" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('pq1')">Submit Answer</button>
+            <div class="explanation correct" id="pq1-exp">
+                <strong>Answer: The trait is autosomal recessive.</strong><br><br>
+                <strong>Key evidence:</strong> Ruben and Sydney are both <em>unaffected</em>, yet they have affected offspring (Janet, Max). When two unaffected parents produce affected children, the trait <strong>must be recessive</strong>&mdash;both parents are carriers (heterozygous). If the trait were dominant, at least one parent would need to show the phenotype to pass it on.<br><br>
+                <strong>Genotypes:</strong> Ruben = <em>Aa</em>, Sydney = <em>Aa</em>, Janet = <em>aa</em>, Max = <em>aa</em>.
+            </div>
+        </div>
+
+        <!-- Practice Q2 -->
+        <div class="question-block" id="pq2">
+            <div class="question-label">Practice Question 2</div>
+            <div class="question-text">What are the possible genotypes of <strong>Sam</strong>? (Sam is married into the family and mated with Janet.)</div>
+            <button class="mc-option" onclick="checkMC('pq2', this, false)">AA only</button>
+            <button class="mc-option" onclick="checkMC('pq2', this, false)">aa only</button>
+            <button class="mc-option" onclick="checkMC('pq2', this, true)">Aa or AA</button>
+            <button class="mc-option" onclick="checkMC('pq2', this, false)">Aa only</button>
+            <div class="explanation correct" id="pq2-correct">
+                <strong>Correct!</strong> Sam is unaffected, so he could be either <em>AA</em> or <em>Aa</em>. Without more information (such as whether any of his children with Janet are affected), we cannot distinguish between the two. However, since Janet is affected (<em>aa</em>), if any of their children are affected, Sam must be <em>Aa</em>. Looking at the pedigree, Ethan (their son) IS affected, which confirms that <strong>Sam must be <em>Aa</em></strong> (a carrier).
+            </div>
+            <div class="explanation incorrect" id="pq2-incorrect">
+                Think carefully: Sam is unaffected, which means he carries at least one dominant allele. That rules out <em>aa</em>. But could he be <em>AA</em> or <em>Aa</em>? Look at his children with Janet (<em>aa</em>)&mdash;Ethan is affected (<em>aa</em>). For Ethan to be <em>aa</em>, he must have received a recessive allele from <em>each</em> parent. Janet contributes one <em>a</em>, and Sam must also contribute an <em>a</em>. Therefore Sam is <strong><em>Aa</em></strong>. The best answer at first glance is <em>Aa</em> or <em>AA</em>, but the pedigree data confirms <em>Aa</em>.
+            </div>
+        </div>
+
+        <!-- Practice Q3 -->
+        <div class="question-block" id="pq3">
+            <div class="question-label">Practice Question 3</div>
+            <div class="question-text">Carlos and Juliet are both unaffected. Their daughter <strong>Sarah</strong> is affected. What must be true about Carlos and Juliet&rsquo;s genotypes?</div>
+            <textarea class="text-input" id="pq3-input" rows="3" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('pq3')">Submit Answer</button>
+            <div class="explanation correct" id="pq3-exp">
+                <strong>Answer: Both Carlos and Juliet must be carriers (<em>Aa</em>).</strong><br><br>
+                Since the trait is autosomal recessive, an affected individual (Sarah = <em>aa</em>) must receive one recessive allele from each parent. Both Carlos and Juliet are unaffected but must each carry one recessive allele. Therefore:<br>
+                &bull; Carlos = <em>Aa</em><br>
+                &bull; Juliet = <em>Aa</em><br>
+                &bull; Sarah = <em>aa</em> (affected)
+            </div>
+        </div>
+
+        <!-- Practice Q4 -->
+        <div class="question-block" id="pq4">
+            <div class="question-label">Practice Question 4</div>
+            <div class="question-text">Sarah (affected) and Luke (unaffected) have three children: Cindy (affected), Nicole (unaffected), and James (unaffected). What is Luke&rsquo;s genotype? What are the possible genotypes of Nicole and James?</div>
+            <textarea class="text-input" id="pq4-input" rows="4" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('pq4')">Submit Answer</button>
+            <div class="explanation correct" id="pq4-exp">
+                <strong>Answer:</strong><br><br>
+                &bull; <strong>Luke must be <em>Aa</em></strong> (a carrier). Sarah is <em>aa</em>, and their daughter Cindy is also affected (<em>aa</em>). For Cindy to be <em>aa</em>, she needs a recessive allele from each parent. Sarah provides one <em>a</em>; Luke must provide the other. So Luke = <em>Aa</em>.<br><br>
+                &bull; <strong>Nicole and James</strong> are unaffected. Since the cross is <em>Aa</em> &times; <em>aa</em>, unaffected offspring are <em>Aa</em> (carriers). Therefore Nicole = <em>Aa</em> and James = <em>Aa</em>.
+            </div>
+        </div>
+
+        <!-- Practice Q5 -->
+        <div class="question-block" id="pq5">
+            <div class="question-label">Practice Question 5</div>
+            <div class="question-text">Does this pedigree support <strong>autosomal</strong> or <strong>sex-linked</strong> inheritance? Explain your reasoning.</div>
+            <textarea class="text-input" id="pq5-input" rows="3" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('pq5')">Submit Answer</button>
+            <div class="explanation correct" id="pq5-exp">
+                <strong>Answer: Autosomal inheritance.</strong><br><br>
+                The trait affects both males and females (Janet, Max, Sarah, Ethan, Cindy). In X-linked recessive inheritance, we would expect mostly males to be affected. Here, females are affected just as often as males, strongly supporting <strong>autosomal recessive</strong> inheritance.
+            </div>
+        </div>
+
+        <div class="section-nav">
+            <button class="nav-btn prev" onclick="showSection(1)">&larr; Interactive Lesson</button>
+            <button class="nav-btn next" onclick="showSection(3)">Next: Challenge &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 3: CHALLENGE ==================== -->
+    <div class="section" id="section-3">
+        <h2>Challenge Problems</h2>
+        <p style="color:#333; margin-bottom:10px;">These problems require deeper analysis. Use the second pedigree (Tyson &amp; Emilia&rsquo;s family) and additional scenarios. After answering, read each explanation to solidify your understanding.</p>
+
+        <!-- ===== PEDIGREE 2: Tyson & Emilia Family ===== -->
+        <h3>Pedigree 2 &mdash; Tyson &amp; Emilia&rsquo;s Family</h3>
+        <div class="info-box amber">This pedigree tracks a different inherited condition. Carefully examine which individuals are affected.</div>
+
+        <div class="pedigree-container">
+            <svg viewBox="0 0 780 420" width="780" height="420" style="font-family:'Segoe UI',sans-serif; font-size:12px;">
+                <!-- ===== GENERATION I: Tyson x Emilia ===== -->
+                <rect x="302" y="15" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="320" y="67" text-anchor="middle" fill="#333" font-size="11">Tyson</text>
+                <circle cx="440" cy="33" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="440" y="67" text-anchor="middle" fill="#333" font-size="11">Emilia</text>
+                <!-- mating line -->
+                <line x1="338" y1="33" x2="422" y2="33" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to sibling comb -->
+                <line x1="380" y1="33" x2="380" y2="82" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION II ===== -->
+                <!-- Sibling comb: ONLY Tanya, Jacob, Ryan are Tyson & Emilia's children -->
+                <line x1="270" y1="82" x2="490" y2="82" stroke="#333" stroke-width="2.5"/>
+                <!-- Tanya (child - on comb) -->
+                <line x1="270" y1="82" x2="270" y2="97" stroke="#333" stroke-width="2.5"/>
+                <circle cx="270" cy="115" r="18" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="270" y="149" text-anchor="middle" fill="#333" font-size="11">Tanya</text>
+                <!-- Jacob (child - on comb) -->
+                <line x1="380" y1="82" x2="380" y2="97" stroke="#333" stroke-width="2.5"/>
+                <rect x="362" y="97" width="36" height="36" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="380" y="149" text-anchor="middle" fill="#333" font-size="11">Jacob</text>
+                <!-- Ryan (child - on comb) -->
+                <line x1="490" y1="82" x2="490" y2="97" stroke="#333" stroke-width="2.5"/>
+                <rect x="472" y="97" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="490" y="149" text-anchor="middle" fill="#333" font-size="11">Ryan</text>
+
+                <!-- Derrick (MARRIED IN - NO drop from comb) -->
+                <rect x="122" y="97" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="140" y="149" text-anchor="middle" fill="#333" font-size="11">Derrick</text>
+                <!-- mating line Derrick -- Tanya -->
+                <line x1="158" y1="115" x2="252" y2="115" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen III left -->
+                <line x1="205" y1="115" x2="205" y2="172" stroke="#333" stroke-width="2.5"/>
+
+                <!-- Olivia (MARRIED IN - NO drop from comb) -->
+                <circle cx="620" cy="115" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="620" y="149" text-anchor="middle" fill="#333" font-size="11">Olivia</text>
+                <!-- mating line Ryan -- Olivia -->
+                <line x1="508" y1="115" x2="602" y2="115" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen III right -->
+                <line x1="555" y1="115" x2="555" y2="172" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION III LEFT (Derrick & Tanya's children) ===== -->
+                <!-- Sibling comb: ONLY Ava, Dylan, Chloe are their children -->
+                <line x1="100" y1="172" x2="280" y2="172" stroke="#333" stroke-width="2.5"/>
+                <!-- Ava (child) -->
+                <line x1="100" y1="172" x2="100" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="100" cy="205" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="100" y="239" text-anchor="middle" fill="#333" font-size="11">Ava</text>
+                <!-- Dylan (child) -->
+                <line x1="190" y1="172" x2="190" y2="187" stroke="#333" stroke-width="2.5"/>
+                <rect x="172" y="187" width="36" height="36" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="190" y="239" text-anchor="middle" fill="#333" font-size="11">Dylan</text>
+                <!-- Chloe (child) -->
+                <line x1="280" y1="172" x2="280" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="280" cy="205" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="280" y="239" text-anchor="middle" fill="#333" font-size="11">Chloe</text>
+
+                <!-- Benjamin (MARRIED IN - NO drop from comb) -->
+                <rect x="352" y="187" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="370" y="239" text-anchor="middle" fill="#333" font-size="11">Benjamin</text>
+                <!-- mating line Chloe -- Benjamin -->
+                <line x1="298" y1="205" x2="352" y2="205" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen IV left -->
+                <line x1="325" y1="205" x2="325" y2="262" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION III RIGHT (Ryan & Olivia's children) ===== -->
+                <!-- Sibling comb: ONLY Angelina and Brandon are their children -->
+                <line x1="490" y1="172" x2="590" y2="172" stroke="#333" stroke-width="2.5"/>
+                <!-- Angelina (child) -->
+                <line x1="490" y1="172" x2="490" y2="187" stroke="#333" stroke-width="2.5"/>
+                <circle cx="490" cy="205" r="18" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="490" y="239" text-anchor="middle" fill="#333" font-size="11">Angelina</text>
+                <!-- Brandon (child) -->
+                <line x1="590" y1="172" x2="590" y2="187" stroke="#333" stroke-width="2.5"/>
+                <rect x="572" y="187" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="590" y="239" text-anchor="middle" fill="#333" font-size="11">Brandon</text>
+
+                <!-- Gabrielle (MARRIED IN - NO drop from comb) -->
+                <circle cx="700" cy="205" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="700" y="239" text-anchor="middle" fill="#333" font-size="11">Gabrielle</text>
+                <!-- mating line Brandon -- Gabrielle -->
+                <line x1="608" y1="205" x2="682" y2="205" stroke="#333" stroke-width="2.5"/>
+                <!-- drop to Gen IV right -->
+                <line x1="645" y1="205" x2="645" y2="262" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION IV LEFT (Chloe & Benjamin's children) ===== -->
+                <line x1="265" y1="262" x2="385" y2="262" stroke="#333" stroke-width="2.5"/>
+                <line x1="265" y1="262" x2="265" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="265" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="265" y="329" text-anchor="middle" fill="#333" font-size="11">Leah</text>
+                <line x1="325" y1="262" x2="325" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="325" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="325" y="329" text-anchor="middle" fill="#333" font-size="11">Jackie</text>
+                <line x1="385" y1="262" x2="385" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="385" cy="295" r="18" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="385" y="329" text-anchor="middle" fill="#333" font-size="11">Diana</text>
+
+                <!-- ===== GENERATION IV RIGHT (Brandon & Gabrielle's children) ===== -->
+                <line x1="585" y1="262" x2="705" y2="262" stroke="#333" stroke-width="2.5"/>
+                <line x1="585" y1="262" x2="585" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="585" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="585" y="329" text-anchor="middle" fill="#333" font-size="11">Alondra</text>
+                <line x1="645" y1="262" x2="645" y2="277" stroke="#333" stroke-width="2.5"/>
+                <circle cx="645" cy="295" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="645" y="329" text-anchor="middle" fill="#333" font-size="11">Sophia</text>
+                <line x1="705" y1="262" x2="705" y2="277" stroke="#333" stroke-width="2.5"/>
+                <rect x="687" y="277" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="705" y="329" text-anchor="middle" fill="#333" font-size="11">Julian</text>
+
+                <!-- KEY -->
+                <rect x="10" y="340" width="185" height="78" fill="#f9f9f9" stroke="#ccc" stroke-width="1.5" rx="8"/>
+                <text x="102" y="356" text-anchor="middle" font-weight="bold" fill="#333" font-size="11">KEY</text>
+                <!-- Row 1 -->
+                <rect x="22" y="363" width="14" height="14" fill="none" stroke="#333" stroke-width="2"/>
+                <text x="42" y="375" fill="#333" font-size="9">Unaff. Male</text>
+                <rect x="118" y="363" width="14" height="14" fill="#555" stroke="#333" stroke-width="2"/>
+                <text x="138" y="375" fill="#333" font-size="9">Aff. Male</text>
+                <!-- Row 2 -->
+                <circle cx="29" cy="396" r="7" fill="none" stroke="#333" stroke-width="2"/>
+                <text x="42" y="400" fill="#333" font-size="9">Unaff. Female</text>
+                <circle cx="125" cy="396" r="7" fill="#555" stroke="#333" stroke-width="2"/>
+                <text x="138" y="400" fill="#333" font-size="9">Aff. Female</text>
+            </svg>
+        </div>
+
+        <!-- Challenge Q1 -->
+        <div class="question-block" id="cq1">
+            <div class="question-label">Challenge Question 1</div>
+            <div class="question-text">Analyze Pedigree 2. Is this trait <strong>dominant or recessive</strong>? Is it <strong>autosomal or sex-linked</strong>? Provide evidence from the pedigree to support both conclusions.</div>
+            <textarea class="text-input" id="cq1-input" rows="5" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('cq1')">Submit Answer</button>
+            <div class="explanation correct" id="cq1-exp">
+                <strong>Answer: The trait is autosomal recessive.</strong><br><br>
+                <strong>Evidence it is recessive:</strong> Tyson and Emilia are both unaffected, yet they produced affected offspring (Tanya, Jacob). Two unaffected parents producing affected children is the hallmark of recessive inheritance. Both parents must be carriers (<em>Aa</em>).<br><br>
+                <strong>Evidence it is autosomal (not sex-linked):</strong> Both males and females are affected (Tanya = female, Jacob = male, Dylan = male, Angelina = female, Diana = female). The trait does not preferentially affect one sex, which rules out X-linked patterns. If it were X-linked recessive, we would expect predominantly males to be affected, and an affected female (like Tanya) would need an affected father&mdash;but Tyson is unaffected.
+            </div>
+        </div>
+
+        <!-- Challenge Q2 -->
+        <div class="question-block" id="cq2">
+            <div class="question-label">Challenge Question 2</div>
+            <div class="question-text">Determine the genotypes of <strong>Derrick</strong> and <strong>Tanya</strong>. Then determine the <strong>probability</strong> that their child Ava is a carrier of the trait.</div>
+            <textarea class="text-input" id="cq2-input" rows="5" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('cq2')">Submit Answer</button>
+            <div class="explanation correct" id="cq2-exp">
+                <strong>Answer:</strong><br><br>
+                &bull; <strong>Tanya = <em>aa</em></strong> (she is affected).<br>
+                &bull; <strong>Derrick = <em>Aa</em></strong> (he is unaffected but has an affected son, Dylan). Since Dylan is <em>aa</em>, he received one <em>a</em> from Tanya and one <em>a</em> from Derrick.<br><br>
+                Cross: <em>Aa</em> &times; <em>aa</em><br>
+                Offspring possibilities: 1/2 <em>Aa</em> (carrier) : 1/2 <em>aa</em> (affected)<br><br>
+                Ava is unaffected, so she is NOT <em>aa</em>. Among the unaffected offspring of this cross, <strong>all are <em>Aa</em></strong> (carriers). Therefore the probability that Ava is a carrier is <strong>100%</strong> (or we can say: given that she is unaffected, she must be <em>Aa</em>).
+            </div>
+        </div>
+
+        <!-- Challenge Q3 -->
+        <div class="question-block" id="cq3">
+            <div class="question-label">Challenge Question 3</div>
+            <div class="question-text">Ryan and Olivia are both unaffected, but their daughter <strong>Angelina</strong> is affected. If Ryan and Olivia were to have another child, what is the probability that the child would be <strong>affected</strong>? What is the probability the child would be a <strong>carrier</strong>?</div>
+            <textarea class="text-input" id="cq3-input" rows="5" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('cq3')">Submit Answer</button>
+            <div class="explanation correct" id="cq3-exp">
+                <strong>Answer:</strong><br><br>
+                Since Angelina is affected (<em>aa</em>), both Ryan and Olivia must be carriers: Ryan = <em>Aa</em>, Olivia = <em>Aa</em>.<br><br>
+                Cross: <em>Aa</em> &times; <em>Aa</em><br>
+                &bull; 1/4 <em>AA</em> (homozygous dominant, unaffected, not a carrier)<br>
+                &bull; 2/4 <em>Aa</em> (heterozygous, unaffected carrier)<br>
+                &bull; 1/4 <em>aa</em> (homozygous recessive, affected)<br><br>
+                Probability of being <strong>affected = 1/4 (25%)</strong>.<br>
+                Probability of being a <strong>carrier = 2/4 (50%)</strong>.
+            </div>
+        </div>
+
+        <!-- Challenge Q4 -->
+        <div class="question-block" id="cq4">
+            <div class="question-label">Challenge Question 4</div>
+            <div class="question-text">Chloe (unaffected) and Benjamin (unaffected) have three daughters: Leah, Jackie, and Diana. Diana is affected. What are Chloe&rsquo;s and Benjamin&rsquo;s genotypes? What is the probability that Leah is a carrier?</div>
+            <textarea class="text-input" id="cq4-input" rows="5" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('cq4')">Submit Answer</button>
+            <div class="explanation correct" id="cq4-exp">
+                <strong>Answer:</strong><br><br>
+                Diana is affected (<em>aa</em>), so both parents must carry at least one recessive allele:<br>
+                &bull; <strong>Chloe = <em>Aa</em></strong><br>
+                &bull; <strong>Benjamin = <em>Aa</em></strong><br><br>
+                Cross: <em>Aa</em> &times; <em>Aa</em> &rarr; 1/4 <em>AA</em>, 2/4 <em>Aa</em>, 1/4 <em>aa</em><br><br>
+                Leah is unaffected (so she is either <em>AA</em> or <em>Aa</em>). Among unaffected offspring of two carriers:<br>
+                &bull; <em>AA</em> : <em>Aa</em> = 1 : 2<br>
+                &bull; Probability Leah is a carrier (<em>Aa</em>) = <strong>2/3 (approximately 67%)</strong>.
+            </div>
+        </div>
+
+        <!-- Challenge Q5 -->
+        <div class="question-block" id="cq5">
+            <div class="question-label">Challenge Question 5</div>
+            <div class="question-text">A different family has the following pedigree pattern: An <strong>affected father</strong> and an <strong>unaffected mother</strong> have <strong>all affected daughters</strong> and <strong>all unaffected sons</strong>. What inheritance pattern does this suggest? Explain why.</div>
+            <textarea class="text-input" id="cq5-input" rows="5" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('cq5')">Submit Answer</button>
+            <div class="explanation correct" id="cq5-exp">
+                <strong>Answer: X-linked dominant inheritance.</strong><br><br>
+                <strong>Reasoning:</strong> The affected father (X<sup>A</sup>Y) passes his X chromosome to <strong>all daughters</strong> and his Y to <strong>all sons</strong>. If the trait is X-linked dominant:<br>
+                &bull; All daughters receive the father&rsquo;s affected X<sup>A</sup>, making them affected (X<sup>A</sup>X<sup>a</sup>).<br>
+                &bull; All sons receive the father&rsquo;s Y (not his X), so they are unaffected (X<sup>a</sup>Y) if the mother is homozygous normal.<br><br>
+                This pattern&mdash;all daughters affected, no sons affected&mdash;is the classic signature of <strong>X-linked dominant</strong> inheritance from an affected father.
+            </div>
+        </div>
+
+        <!-- Challenge Q6 -->
+        <div class="question-block" id="cq6">
+            <div class="question-label">Challenge Question 6</div>
+            <div class="question-text"><strong>Polydactyly</strong> (extra fingers or toes) is an autosomal dominant trait. If one parent is heterozygous for polydactyly (<em>Pp</em>) and the other parent is homozygous normal (<em>pp</em>), draw a Punnett square and determine: (a) What percentage of offspring will have polydactyly? (b) Could two parents with polydactyly have a child with the normal number of digits?</div>
+            <textarea class="text-input" id="cq6-input" rows="6" placeholder="Type your answer here (describe the Punnett square and answer both parts)..."></textarea>
+            <button class="submit-btn" onclick="submitText('cq6')">Submit Answer</button>
+            <div class="explanation correct" id="cq6-exp">
+                <strong>Answer:</strong><br><br>
+                <strong>Punnett Square (<em>Pp</em> &times; <em>pp</em>):</strong><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;| &nbsp;p &nbsp;| &nbsp;p<br>
+                P &nbsp;| Pp | Pp<br>
+                p &nbsp;| pp | pp<br><br>
+                <strong>(a)</strong> 2/4 offspring are <em>Pp</em> (polydactyly) and 2/4 are <em>pp</em> (normal). So <strong>50%</strong> of offspring will have polydactyly.<br><br>
+                <strong>(b)</strong> Yes! If both parents are heterozygous (<em>Pp</em> &times; <em>Pp</em>):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;| &nbsp;P &nbsp;| &nbsp;p<br>
+                P &nbsp;| PP | Pp<br>
+                p &nbsp;| Pp | pp<br><br>
+                There is a <strong>1/4 (25%) chance</strong> of a homozygous normal (<em>pp</em>) child. So yes, two parents with polydactyly can have a child with the normal number of digits.
+            </div>
+        </div>
+
+        <!-- ===== COPY SECTION ===== -->
+        <div class="copy-section">
+            <h3>Copy Your Answers for Google Classroom</h3>
+            <p style="color:#555; margin-bottom:15px;">Click the button below to compile all of your answers into a format you can paste into a Google Doc or Word document for submission.</p>
+            <button class="btn-copy" onclick="compileAnswers()">Compile My Answers</button>
+            <button class="btn-copy green" id="copyBtn" onclick="copyToClipboard()" style="display:none;">Copy to Clipboard</button>
+            <span class="copy-success" id="copySuccess">Copied to clipboard!</span>
+            <div class="copy-area" id="copyArea"></div>
+        </div>
+
+        <div class="section-nav" style="border-top:none; margin-top:10px;">
+            <button class="nav-btn prev" onclick="showSection(2)">&larr; Practice</button>
+            <span></span>
+        </div>
+    </div>
+
+</div><!-- end container -->
+
+<script>
+// ======== SECTION NAVIGATION ========
+const sections = document.querySelectorAll('.section');
+const tabs = document.querySelectorAll('.nav-tab');
+let completedSections = new Set();
+
+function showSection(index) {
+    // Mark current section as completed
+    sections.forEach((s, i) => {
+        if (s.classList.contains('active') && i !== index) {
+            completedSections.add(i);
+        }
+    });
+    sections.forEach(s => s.classList.remove('active'));
+    tabs.forEach(t => t.classList.remove('active'));
+    sections[index].classList.add('active');
+    tabs[index].classList.add('active');
+    completedSections.forEach(i => tabs[i].classList.add('completed'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ======== MULTIPLE CHOICE ========
+function checkMC(qId, btn, isCorrect) {
+    const block = document.getElementById(qId);
+    const buttons = block.querySelectorAll('.mc-option');
+    buttons.forEach(b => { b.disabled = true; });
+
+    if (isCorrect) {
+        btn.classList.add('selected-correct');
+        block.classList.add('answered-correct');
+        const exp = document.getElementById(qId + '-correct');
+        if (exp) exp.classList.add('show');
+    } else {
+        btn.classList.add('selected-incorrect');
+        block.classList.add('answered-incorrect');
+        // Highlight the correct answer
+        buttons.forEach(b => {
+            if (b.getAttribute('onclick') && b.getAttribute('onclick').includes('true')) {
+                b.classList.add('correct-answer');
+            }
+        });
+        const exp = document.getElementById(qId + '-incorrect');
+        if (exp) exp.classList.add('show');
+    }
+
+    // Store answer
+    const selectedText = btn.textContent.trim();
+    block.dataset.answer = selectedText;
+    block.dataset.correct = isCorrect;
+}
+
+// ======== TEXT SUBMIT ========
+function submitText(qId) {
+    const block = document.getElementById(qId);
+    const input = document.getElementById(qId + '-input');
+    const btn = block.querySelector('.submit-btn');
+    const answer = input.value.trim();
+
+    if (!answer) {
+        input.style.borderColor = '#e53935';
+        input.placeholder = 'Please type an answer before submitting.';
+        return;
+    }
+
+    input.disabled = true;
+    btn.disabled = true;
+    block.classList.add('answered-correct');
+    block.dataset.answer = answer;
+
+    const exp = document.getElementById(qId + '-exp');
+    if (exp) exp.classList.add('show');
+}
+
+// ======== COMPILE & COPY ANSWERS ========
+function compileAnswers() {
+    let text = '';
+    text += '========================================\n';
+    text += 'PEDIGREE ANALYSIS - STUDENT ANSWERS\n';
+    text += '========================================\n';
+    text += 'Name: ___________________________\n';
+    text += 'Date: ___________________________\n';
+    text += 'Period: __________________________\n\n';
+
+    // Lesson Check questions
+    const lessonQs = [
+        { id: 'lesson-q1', label: 'Lesson Check 1: What does a shaded circle represent?' },
+        { id: 'lesson-q2', label: 'Lesson Check 2: Two unaffected parents have an affected child - what does this tell you?' },
+        { id: 'lesson-q3', label: 'Lesson Check 3: Condition almost exclusively in males from carrier mothers - pattern?' }
+    ];
+
+    let hasLessonAnswers = false;
+    lessonQs.forEach(q => {
+        const block = document.getElementById(q.id);
+        if (block && block.dataset.answer) {
+            if (!hasLessonAnswers) {
+                text += '--- INTERACTIVE LESSON CHECKS ---\n\n';
+                hasLessonAnswers = true;
+            }
+            text += q.label + '\n';
+            text += 'My Answer: ' + block.dataset.answer + '\n';
+            text += 'Correct: ' + (block.dataset.correct === 'true' ? 'Yes' : 'No') + '\n\n';
+        }
+    });
+
+    // Practice questions
+    const practiceQs = [
+        { id: 'pq1', label: 'Practice Q1: Is the trait dominant or recessive? Explain.' },
+        { id: 'pq2', label: 'Practice Q2: What are Sam\'s possible genotypes?' },
+        { id: 'pq3', label: 'Practice Q3: What must be true about Carlos and Juliet\'s genotypes?' },
+        { id: 'pq4', label: 'Practice Q4: Luke\'s genotype? Nicole and James\'s possible genotypes?' },
+        { id: 'pq5', label: 'Practice Q5: Autosomal or sex-linked? Explain.' }
+    ];
+
+    let hasPractice = false;
+    practiceQs.forEach(q => {
+        const block = document.getElementById(q.id);
+        if (block && block.dataset.answer) {
+            if (!hasPractice) {
+                text += '--- PRACTICE PROBLEMS (Pedigree 1: Ruben & Sydney) ---\n\n';
+                hasPractice = true;
+            }
+            text += q.label + '\n';
+            text += 'My Answer: ' + block.dataset.answer + '\n\n';
+        }
+    });
+
+    // Challenge questions
+    const challengeQs = [
+        { id: 'cq1', label: 'Challenge Q1: Dominant/recessive? Autosomal/sex-linked? Evidence.' },
+        { id: 'cq2', label: 'Challenge Q2: Derrick & Tanya genotypes; probability Ava is carrier.' },
+        { id: 'cq3', label: 'Challenge Q3: Probability next child affected/carrier (Ryan & Olivia).' },
+        { id: 'cq4', label: 'Challenge Q4: Chloe & Benjamin genotypes; probability Leah is carrier.' },
+        { id: 'cq5', label: 'Challenge Q5: Affected father, all daughters affected, no sons - pattern?' },
+        { id: 'cq6', label: 'Challenge Q6: Polydactyly Punnett square and questions.' }
+    ];
+
+    let hasChallenge = false;
+    challengeQs.forEach(q => {
+        const block = document.getElementById(q.id);
+        if (block && block.dataset.answer) {
+            if (!hasChallenge) {
+                text += '--- CHALLENGE PROBLEMS ---\n\n';
+                hasChallenge = true;
+            }
+            text += q.label + '\n';
+            text += 'My Answer: ' + block.dataset.answer + '\n\n';
+        }
+    });
+
+    if (!hasLessonAnswers && !hasPractice && !hasChallenge) {
+        text += '(No answers submitted yet. Complete the lesson and practice sections first!)\n';
+    }
+
+    text += '========================================\n';
+
+    const copyArea = document.getElementById('copyArea');
+    copyArea.textContent = text;
+    copyArea.classList.add('show');
+    document.getElementById('copyBtn').style.display = 'inline-block';
+}
+
+function copyToClipboard() {
+    const text = document.getElementById('copyArea').textContent;
+    navigator.clipboard.writeText(text).then(function() {
+        const el = document.getElementById('copySuccess');
+        el.classList.add('visible');
+        setTimeout(function() { el.classList.remove('visible'); }, 2500);
+    }).catch(function() {
+        // Fallback for older browsers
+        const temp = document.createElement('textarea');
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        try {
+            document.execCommand('copy');
+            const el = document.getElementById('copySuccess');
+            el.classList.add('visible');
+            setTimeout(function() { el.classList.remove('visible'); }, 2500);
+        } catch(e) {
+            alert('Could not copy. Please select the text above and copy manually (Ctrl+C).');
+        }
+        document.body.removeChild(temp);
+    });
+}
+</script>
+
+</body>
+</html>
