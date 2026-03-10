@@ -264,6 +264,13 @@
             margin: 15px 0; color: #e65100;
         }
         .tip strong { color: #bf360c; }
+
+        /* Karyotype figure */
+        .karyotype-figure { text-align: center; margin: 15px 0; }
+        .karyotype-figure img { max-width: 100%; border-radius: 10px; border: 2px solid #ccc; }
+        .karyotype-figure figcaption {
+            font-size: 0.85rem; color: #666; margin-top: 8px; font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -280,6 +287,8 @@
         <button class="nav-tab" onclick="showSection(1)">Interactive Lesson</button>
         <button class="nav-tab" onclick="showSection(2)">Practice</button>
         <button class="nav-tab" onclick="showSection(3)">Challenge</button>
+        <button class="nav-tab" onclick="showSection(4)">Sex-Linked Traits</button>
+        <button class="nav-tab" onclick="showSection(5)">Sex-Linked Pedigree</button>
     </div>
 
     <!-- ==================== SECTION 0: INTRODUCTION ==================== -->
@@ -301,7 +310,7 @@
             <div class="vocab-card"><strong>Phenotype</strong><br>The observable expression of a trait (e.g., black coat, dimples, disease symptoms).</div>
             <div class="vocab-card"><strong>Genotype</strong><br>The genetic makeup of an individual (e.g., <em>Bb</em>, <em>bb</em>).</div>
             <div class="vocab-card"><strong>Carrier</strong><br>An individual who is heterozygous for a recessive trait&mdash;they carry the allele but do not show the phenotype.</div>
-            <div class="vocab-card"><strong>Autosomal</strong><br>A trait located on one of the 22 non-sex chromosomes (chromosomes 1&ndash;22).</div>
+            <div class="vocab-card"><strong>Autosomal</strong><br>A trait located on one of the 22 pairs of non-sex chromosomes (autosomes 1&ndash;22). Humans have 44 autosomes + 2 sex chromosomes = <strong>46 total</strong>.</div>
             <div class="vocab-card"><strong>Sex-linked</strong><br>A trait located on a sex chromosome (usually the X chromosome).</div>
             <div class="vocab-card"><strong>Dominant</strong><br>A trait expressed when at least one dominant allele is present (only one copy needed).</div>
             <div class="vocab-card"><strong>Recessive</strong><br>A trait expressed only when two copies of the recessive allele are present (homozygous recessive).</div>
@@ -429,6 +438,26 @@
             Ask: &ldquo;Are males affected much more often than females?&rdquo;<br>
             &bull; <strong>Yes</strong> &rarr; Consider <strong>X-linked</strong> inheritance.<br>
             &bull; <strong>No</strong> (roughly equal) &rarr; Likely <strong>autosomal</strong>.
+        </div>
+
+        <h3>The Human Karyotype: Seeing Chromosomes</h3>
+        <div class="info-box">
+            <p style="color:#333; line-height:1.7; margin-bottom:12px;">
+                A <span class="key-term">karyotype</span> is a photograph of all the chromosomes in a cell, arranged by size and numbered. The image below shows a <strong>human male karyotype</strong>:
+            </p>
+            <figure class="karyotype-figure">
+                <img src="karyotype-human-male.jpg" alt="Human male karyotype showing 22 pairs of autosomes and XY sex chromosomes">
+                <figcaption>Human male karyotype &mdash; 22 pairs of autosomes + 1 pair of sex chromosomes (XY) = 46 chromosomes total</figcaption>
+            </figure>
+            <p style="color:#333; line-height:1.7; margin-top:12px;">
+                Humans have <strong>46 chromosomes</strong> arranged in <strong>23 pairs</strong>: <strong>22 pairs of autosomes</strong> (numbered 1&ndash;22) plus <strong>1 pair of sex chromosomes</strong>. Females have two X chromosomes (<strong>XX</strong>); males have one X and one Y (<strong>XY</strong>).
+            </p>
+        </div>
+
+        <div class="info-box purple">
+            <strong>Why Males Are More Vulnerable to X-Linked Traits</strong><br><br>
+            Look at the sex chromosomes in the karyotype above. The <strong>X chromosome is much larger</strong> than the Y chromosome&mdash;they are <em>not</em> homologous. The Y chromosome carries very few genes compared to the X.<br><br>
+            This means <strong>males have only one copy of most X-linked genes</strong>. If a male inherits a single recessive allele on his X chromosome, there is no second X to provide a dominant &ldquo;backup&rdquo; allele. He <em>will</em> express the recessive trait. Females, with two X chromosomes, would need <em>two</em> copies of the recessive allele to be affected&mdash;one from each parent. This is why <strong>X-linked recessive disorders affect males far more often than females</strong>.
         </div>
 
         <h3>Interactive Check: Identify the Symbol</h3>
@@ -922,10 +951,309 @@
             </div>
         </div>
 
+        <div class="section-nav">
+            <button class="nav-btn prev" onclick="showSection(2)">&larr; Practice</button>
+            <button class="nav-btn next" onclick="showSection(4)">Next: Sex-Linked Traits &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 4: SEX-LINKED TRAITS ==================== -->
+    <div class="section" id="section-4">
+        <h2>Sex-Linked Inheritance</h2>
+
+        <p style="line-height:1.7; color:#333; margin-bottom:15px;">
+            So far, the pedigrees you have analyzed tracked <strong>autosomal</strong> traits&mdash;genes on chromosomes 1&ndash;22 that affect males and females equally. Now we turn to traits carried on the <strong>sex chromosomes</strong>, especially the X chromosome. These follow different rules.
+        </p>
+
+        <h3>Review: Sex Chromosomes Are Not Equal</h3>
+        <div class="info-box">
+            <figure class="karyotype-figure">
+                <img src="karyotype-human-male.jpg" alt="Human male karyotype highlighting the XY sex chromosomes" style="max-width:550px;">
+                <figcaption>The X chromosome is much larger than the Y chromosome &mdash; they are not homologous</figcaption>
+            </figure>
+            <p style="color:#333; line-height:1.7; margin-top:12px;">
+                Recall: the <strong>X chromosome</strong> carries roughly <strong>800&ndash;900 genes</strong>, while the <strong>Y chromosome</strong> carries only about <strong>50&ndash;60 genes</strong>. Most X-linked genes have <em>no corresponding copy</em> on the Y. A male who inherits a recessive allele on his single X has no second allele to mask it&mdash;he is said to be <span class="key-term">hemizygous</span> for that gene.
+            </p>
+        </div>
+
+        <div class="info-box purple">
+            <strong>Key Concept: Hemizygous Males</strong><br><br>
+            &bull; <strong>Females (XX)</strong>: Have two copies of every X-linked gene. A recessive allele can be masked by a dominant allele on the other X. Females can be <em>carriers</em>&mdash;they carry one copy of a recessive allele without showing the trait.<br><br>
+            &bull; <strong>Males (XY)</strong>: Have only <em>one</em> copy of each X-linked gene. If that single copy is recessive, the male <strong>will express the trait</strong>. Males <em>cannot</em> be carriers of X-linked recessive traits&mdash;they are either affected or unaffected.
+        </div>
+
+        <h3>Hemophilia: A Classic X-Linked Recessive Disorder</h3>
+        <div class="info-box green">
+            <strong>What is hemophilia?</strong><br><br>
+            Hemophilia is a bleeding disorder in which the blood does not clot properly. People with hemophilia can bleed for much longer than normal after an injury, and they are at risk for internal bleeding. The gene for one of the key clotting factors is located on the <strong>X chromosome</strong>.<br><br>
+            <strong>Historical connection:</strong> Queen Victoria of England (1819&ndash;1901) was a carrier of hemophilia. She passed the allele to several of her children, who married into royal families across Europe, spreading hemophilia through the royal houses of Spain, Germany, and Russia. It became known as &ldquo;the royal disease.&rdquo;
+        </div>
+
+        <h3>Genotype Notation for X-Linked Traits</h3>
+        <p style="color:#333; line-height:1.7; margin-bottom:12px;">
+            For X-linked traits, we write the alleles as superscripts on the X chromosome. For hemophilia, let <strong>H</strong> = normal clotting (dominant) and <strong>h</strong> = hemophilia (recessive):
+        </p>
+        <div class="vocab-grid">
+            <div class="vocab-card"><strong>X<sup>H</sup>X<sup>H</sup></strong><br>Female &mdash; Unaffected<br><em>(homozygous dominant)</em></div>
+            <div class="vocab-card" style="border-left-color:#7b1fa2;"><strong>X<sup>H</sup>X<sup>h</sup></strong><br>Female &mdash; Carrier (unaffected)<br><em>(heterozygous)</em></div>
+            <div class="vocab-card" style="border-left-color:#e53935;"><strong>X<sup>h</sup>X<sup>h</sup></strong><br>Female &mdash; Affected<br><em>(homozygous recessive; very rare)</em></div>
+            <div class="vocab-card"><strong>X<sup>H</sup>Y</strong><br>Male &mdash; Unaffected</div>
+            <div class="vocab-card" style="border-left-color:#e53935;"><strong>X<sup>h</sup>Y</strong><br>Male &mdash; Affected<br><em>(hemizygous recessive)</em></div>
+        </div>
+
+        <h3>Carrier Females in Pedigrees</h3>
+        <p style="color:#333; line-height:1.7; margin-bottom:12px;">
+            In sex-linked pedigrees, <strong>carrier females</strong> are shown with a <strong>half-shaded symbol</strong>. The left half is filled to indicate they carry one copy of the recessive allele, even though they do not show the trait:
+        </p>
+        <div class="symbol-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+            <div class="symbol-card">
+                <svg width="60" height="60"><circle cx="30" cy="30" r="20" fill="none" stroke="#333" stroke-width="3"/></svg>
+                <p>Unaffected Female<br><small>(X<sup>H</sup>X<sup>H</sup>)</small></p>
+            </div>
+            <div class="symbol-card" style="border-color:#7b1fa2;">
+                <svg width="60" height="60">
+                    <circle cx="30" cy="30" r="20" fill="none" stroke="#333" stroke-width="3"/>
+                    <path d="M 30,10 A 20,20 0 0,0 30,50 Z" fill="#555"/>
+                </svg>
+                <p>Carrier Female<br><small>(X<sup>H</sup>X<sup>h</sup>)</small></p>
+            </div>
+            <div class="symbol-card">
+                <svg width="60" height="60"><circle cx="30" cy="30" r="20" fill="#555" stroke="#333" stroke-width="3"/></svg>
+                <p>Affected Female<br><small>(X<sup>h</sup>X<sup>h</sup>)</small></p>
+            </div>
+            <div class="symbol-card">
+                <svg width="60" height="60"><rect x="10" y="10" width="40" height="40" fill="none" stroke="#333" stroke-width="3"/></svg>
+                <p>Unaffected Male<br><small>(X<sup>H</sup>Y)</small></p>
+            </div>
+            <div class="symbol-card">
+                <svg width="60" height="60"><rect x="10" y="10" width="40" height="40" fill="#555" stroke="#333" stroke-width="3"/></svg>
+                <p>Affected Male<br><small>(X<sup>h</sup>Y)</small></p>
+            </div>
+        </div>
+
+        <h3>How X-Linked Traits Are Passed</h3>
+        <div class="info-box amber">
+            <strong>Key Inheritance Rules:</strong><br><br>
+            &bull; <strong>Fathers pass their X to all daughters</strong> and their <strong>Y to all sons</strong>. An affected father (X<sup>h</sup>Y) will make <em>all daughters carriers</em> but will <em>not</em> pass the allele to any sons.<br><br>
+            &bull; <strong>Carrier mothers</strong> (X<sup>H</sup>X<sup>h</sup>) have a <strong>50% chance</strong> of passing X<sup>h</sup> to each child. Sons who receive X<sup>h</sup> will be affected; daughters who receive X<sup>h</sup> will be carriers.<br><br>
+            &bull; For a <strong>female to be affected</strong>, she must inherit X<sup>h</sup> from <em>both</em> parents&mdash;meaning her father must be affected <em>and</em> her mother must be at least a carrier. This is why affected females are very rare.
+        </div>
+
+        <h3>Check Your Understanding</h3>
+
+        <div class="question-block" id="sl-q1">
+            <div class="question-label">Lesson Check 4</div>
+            <div class="question-text">A mother is a carrier for hemophilia (X<sup>H</sup>X<sup>h</sup>) and the father is unaffected (X<sup>H</sup>Y). What percentage of their <strong>sons</strong> would be expected to have hemophilia?</div>
+            <button class="mc-option" onclick="checkMC('sl-q1', this, false)">25%</button>
+            <button class="mc-option" onclick="checkMC('sl-q1', this, false)">100%</button>
+            <button class="mc-option" onclick="checkMC('sl-q1', this, true)">50%</button>
+            <button class="mc-option" onclick="checkMC('sl-q1', this, false)">75%</button>
+            <div class="explanation correct" id="sl-q1-correct">Correct! The carrier mother passes either X<sup>H</sup> or X<sup>h</sup> to each son with equal probability. Sons get their Y from the father, so: 50% of sons = X<sup>H</sup>Y (unaffected) and 50% = X<sup>h</sup>Y (affected).</div>
+            <div class="explanation incorrect" id="sl-q1-incorrect">Not quite. The carrier mother (X<sup>H</sup>X<sup>h</sup>) has a 50/50 chance of passing either her normal X<sup>H</sup> or her recessive X<sup>h</sup> to each child. Sons always get Y from the father. So <strong>50% of sons</strong> will receive X<sup>h</sup> and be affected.</div>
+        </div>
+
+        <div class="question-block" id="sl-q2">
+            <div class="question-label">Lesson Check 5</div>
+            <div class="question-text">Why are males more frequently affected by X-linked recessive disorders than females?</div>
+            <button class="mc-option" onclick="checkMC('sl-q2', this, true)">Males have only one X chromosome, so a single recessive allele is expressed</button>
+            <button class="mc-option" onclick="checkMC('sl-q2', this, false)">Males have two copies of the X chromosome</button>
+            <button class="mc-option" onclick="checkMC('sl-q2', this, false)">Males have weaker immune systems</button>
+            <button class="mc-option" onclick="checkMC('sl-q2', this, false)">The Y chromosome amplifies recessive traits</button>
+            <div class="explanation correct" id="sl-q2-correct">Correct! Males are <strong>hemizygous</strong>&mdash;they have only one X chromosome. With no second X to carry a dominant allele, a single recessive allele on the X is automatically expressed. Females need <em>two</em> recessive copies (one from each parent) to be affected, which is much less likely.</div>
+            <div class="explanation incorrect" id="sl-q2-incorrect">Think about the chromosomes. Males have only <strong>one X chromosome</strong> (and one Y). The Y does not carry copies of most X-linked genes. So if a male&rsquo;s single X has a recessive allele, there is <strong>no backup dominant allele</strong> to mask it&mdash;he will express the trait. This makes males <strong>hemizygous</strong> for X-linked genes.</div>
+        </div>
+
+        <div class="question-block" id="sl-q3">
+            <div class="question-label">Lesson Check 6</div>
+            <div class="question-text">A father has hemophilia (X<sup>h</sup>Y). Can he pass hemophilia directly to his <strong>sons</strong>?</div>
+            <button class="mc-option" onclick="checkMC('sl-q3', this, false)">Yes &mdash; all sons will have hemophilia</button>
+            <button class="mc-option" onclick="checkMC('sl-q3', this, false)">Yes &mdash; about half his sons will have hemophilia</button>
+            <button class="mc-option" onclick="checkMC('sl-q3', this, true)">No &mdash; fathers pass their Y chromosome to sons, not their X</button>
+            <button class="mc-option" onclick="checkMC('sl-q3', this, false)">It depends entirely on the mother&rsquo;s genotype</button>
+            <div class="explanation correct" id="sl-q3-correct">Correct! A father gives his <strong>Y chromosome to every son</strong> and his <strong>X chromosome to every daughter</strong>. Since the hemophilia allele is on his X, he passes it to <em>daughters only</em> (making them carriers at minimum). His sons receive his Y, which does <em>not</em> carry the hemophilia gene. Whether sons are affected depends entirely on what the <em>mother</em> passes.</div>
+            <div class="explanation incorrect" id="sl-q3-incorrect">Remember how sex chromosomes are inherited: fathers always pass their <strong>Y to sons</strong> and their <strong>X to daughters</strong>. An affected father (X<sup>h</sup>Y) gives his X<sup>h</sup> to every daughter (making them at least carriers), but his sons get his Y&mdash;<strong>not his X</strong>. The father <em>cannot</em> directly pass an X-linked allele to his sons.</div>
+        </div>
+
+        <div class="section-nav">
+            <button class="nav-btn prev" onclick="showSection(3)">&larr; Challenge</button>
+            <button class="nav-btn next" onclick="showSection(5)">Next: Sex-Linked Pedigree &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ==================== SECTION 5: SEX-LINKED PEDIGREE ==================== -->
+    <div class="section" id="section-5">
+        <h2>Sex-Linked Pedigree: Hemophilia</h2>
+        <p style="color:#333; margin-bottom:10px;">Use the pedigree below to answer each question. This family is tracking <strong>hemophilia</strong>, an X-linked recessive disorder. Carrier females are shown with half-shaded circles.</p>
+
+        <h3>Pedigree 3 &mdash; Robert &amp; Catherine&rsquo;s Family (Hemophilia)</h3>
+        <div class="info-box purple">Robert is unaffected. Catherine is known to be a <strong>carrier</strong> of hemophilia (X<sup>H</sup>X<sup>h</sup>). Study how the hemophilia allele passes through their family across three generations.</div>
+
+        <div class="pedigree-container">
+            <svg viewBox="0 0 700 390" width="700" height="390" style="font-family:'Segoe UI',sans-serif; font-size:12px;">
+                <!-- ===== GENERATION I: Robert x Catherine ===== -->
+                <!-- Robert (unaffected male) -->
+                <rect x="282" y="17" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="300" y="70" text-anchor="middle" fill="#333" font-size="11">Robert</text>
+                <!-- Catherine (carrier female - half shaded) -->
+                <circle cx="440" cy="35" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <path d="M 440,17 A 18,18 0 0,0 440,53 Z" fill="#555"/>
+                <text x="440" y="70" text-anchor="middle" fill="#333" font-size="11">Catherine</text>
+                <!-- Mating line -->
+                <line x1="318" y1="35" x2="422" y2="35" stroke="#333" stroke-width="2.5"/>
+                <!-- Drop to Gen II comb -->
+                <line x1="370" y1="35" x2="370" y2="88" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION II ===== -->
+                <!-- Sibling comb -->
+                <line x1="220" y1="88" x2="530" y2="88" stroke="#333" stroke-width="2.5"/>
+
+                <!-- Elena (carrier female - half shaded) - on comb -->
+                <line x1="220" y1="88" x2="220" y2="102" stroke="#333" stroke-width="2.5"/>
+                <circle cx="220" cy="120" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <path d="M 220,102 A 18,18 0 0,0 220,138 Z" fill="#555"/>
+                <text x="220" y="155" text-anchor="middle" fill="#333" font-size="11">Elena</text>
+
+                <!-- Michael (affected male) - on comb -->
+                <line x1="370" y1="88" x2="370" y2="102" stroke="#333" stroke-width="2.5"/>
+                <rect x="352" y="102" width="36" height="36" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="370" y="155" text-anchor="middle" fill="#333" font-size="11">Michael</text>
+
+                <!-- Thomas (unaffected male) - on comb -->
+                <line x1="530" y1="88" x2="530" y2="102" stroke="#333" stroke-width="2.5"/>
+                <rect x="512" y="102" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="530" y="155" text-anchor="middle" fill="#333" font-size="11">Thomas</text>
+
+                <!-- James (married in - unaffected male) -->
+                <rect x="62" y="102" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="80" y="155" text-anchor="middle" fill="#333" font-size="11">James</text>
+                <!-- Mating line James -- Elena -->
+                <line x1="98" y1="120" x2="202" y2="120" stroke="#333" stroke-width="2.5"/>
+                <!-- Drop to Gen III -->
+                <line x1="150" y1="120" x2="150" y2="180" stroke="#333" stroke-width="2.5"/>
+
+                <!-- ===== GENERATION III (Elena & James's children) ===== -->
+                <!-- Sibling comb -->
+                <line x1="50" y1="180" x2="290" y2="180" stroke="#333" stroke-width="2.5"/>
+
+                <!-- Lily (unaffected female) -->
+                <line x1="50" y1="180" x2="50" y2="197" stroke="#333" stroke-width="2.5"/>
+                <circle cx="50" cy="215" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="50" y="250" text-anchor="middle" fill="#333" font-size="11">Lily</text>
+
+                <!-- Daniel (affected male) -->
+                <line x1="130" y1="180" x2="130" y2="197" stroke="#333" stroke-width="2.5"/>
+                <rect x="112" y="197" width="36" height="36" fill="#555" stroke="#333" stroke-width="2.5"/>
+                <text x="130" y="250" text-anchor="middle" fill="#333" font-size="11">Daniel</text>
+
+                <!-- Sophie (unaffected female) -->
+                <line x1="210" y1="180" x2="210" y2="197" stroke="#333" stroke-width="2.5"/>
+                <circle cx="210" cy="215" r="18" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="210" y="250" text-anchor="middle" fill="#333" font-size="11">Sophie</text>
+
+                <!-- Nathan (unaffected male) -->
+                <line x1="290" y1="180" x2="290" y2="197" stroke="#333" stroke-width="2.5"/>
+                <rect x="272" y="197" width="36" height="36" fill="none" stroke="#333" stroke-width="2.5"/>
+                <text x="290" y="250" text-anchor="middle" fill="#333" font-size="11">Nathan</text>
+
+                <!-- ===== KEY ===== -->
+                <rect x="420" y="270" width="270" height="112" fill="#f9f9f9" stroke="#ccc" stroke-width="1.5" rx="8"/>
+                <text x="555" y="288" text-anchor="middle" font-weight="bold" fill="#333" font-size="11">KEY</text>
+                <!-- Row 1: Males -->
+                <rect x="435" y="297" width="14" height="14" fill="none" stroke="#333" stroke-width="2"/>
+                <text x="455" y="309" fill="#333" font-size="9">Unaff. Male</text>
+                <rect x="560" y="297" width="14" height="14" fill="#555" stroke="#333" stroke-width="2"/>
+                <text x="580" y="309" fill="#333" font-size="9">Aff. Male</text>
+                <!-- Row 2: Females -->
+                <circle cx="442" cy="330" r="7" fill="none" stroke="#333" stroke-width="2"/>
+                <text x="455" y="334" fill="#333" font-size="9">Unaff. Female</text>
+                <circle cx="567" cy="330" r="7" fill="#555" stroke="#333" stroke-width="2"/>
+                <text x="580" y="334" fill="#333" font-size="9">Aff. Female</text>
+                <!-- Row 3: Carrier -->
+                <circle cx="442" cy="360" r="7" fill="none" stroke="#333" stroke-width="2"/>
+                <path d="M 442,353 A 7,7 0 0,0 442,367 Z" fill="#555"/>
+                <text x="455" y="364" fill="#333" font-size="9">Carrier Female</text>
+            </svg>
+        </div>
+
+        <!-- SLQ1 -->
+        <div class="question-block" id="slq1">
+            <div class="question-label">Sex-Linked Question 1</div>
+            <div class="question-text">What are the genotypes of <strong>Robert</strong> and <strong>Catherine</strong>?</div>
+            <button class="mc-option" onclick="checkMC('slq1', this, false)">Robert = X<sup>H</sup>X<sup>H</sup>, Catherine = X<sup>H</sup>X<sup>h</sup></button>
+            <button class="mc-option" onclick="checkMC('slq1', this, false)">Robert = X<sup>h</sup>Y, Catherine = X<sup>H</sup>X<sup>H</sup></button>
+            <button class="mc-option" onclick="checkMC('slq1', this, false)">Robert = X<sup>H</sup>Y, Catherine = X<sup>h</sup>X<sup>h</sup></button>
+            <button class="mc-option" onclick="checkMC('slq1', this, true)">Robert = X<sup>H</sup>Y, Catherine = X<sup>H</sup>X<sup>h</sup></button>
+            <div class="explanation correct" id="slq1-correct">Correct! Robert is an unaffected male, so his genotype is <strong>X<sup>H</sup>Y</strong>. Catherine is identified as a carrier, meaning she has one normal and one recessive allele: <strong>X<sup>H</sup>X<sup>h</sup></strong>. Remember, males have XY (not XX), so Robert cannot be X<sup>H</sup>X<sup>H</sup>.</div>
+            <div class="explanation incorrect" id="slq1-incorrect">Remember: males are <strong>XY</strong> (not XX), so Robert&rsquo;s genotype must include a Y. He is unaffected, so he is <strong>X<sup>H</sup>Y</strong>. Catherine is a carrier (unaffected but heterozygous), so she is <strong>X<sup>H</sup>X<sup>h</sup></strong>.</div>
+        </div>
+
+        <!-- SLQ2 -->
+        <div class="question-block" id="slq2">
+            <div class="question-label">Sex-Linked Question 2</div>
+            <div class="question-text">Michael has hemophilia but his brother Thomas does not, even though they have the same parents. <strong>Explain</strong> how this is possible using their genotypes.</div>
+            <textarea class="text-input" id="slq2-input" rows="4" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('slq2')">Submit Answer</button>
+            <div class="explanation correct" id="slq2-exp">
+                <strong>Answer:</strong><br><br>
+                Catherine (X<sup>H</sup>X<sup>h</sup>) has a 50% chance of passing X<sup>H</sup> and a 50% chance of passing X<sup>h</sup> to each son. Both sons get their Y from Robert.<br><br>
+                &bull; <strong>Michael</strong> received X<sup>h</sup> from Catherine &rarr; genotype X<sup>h</sup>Y &rarr; <strong>affected</strong>.<br>
+                &bull; <strong>Thomas</strong> received X<sup>H</sup> from Catherine &rarr; genotype X<sup>H</sup>Y &rarr; <strong>unaffected</strong>.<br><br>
+                This is simply the luck of which X chromosome each son inherited. Each son had a 50/50 chance.
+            </div>
+        </div>
+
+        <!-- SLQ3 -->
+        <div class="question-block" id="slq3">
+            <div class="question-label">Sex-Linked Question 3</div>
+            <div class="question-text">Elena is a carrier (X<sup>H</sup>X<sup>h</sup>) and James is unaffected (X<sup>H</sup>Y). What is the <strong>probability</strong> that any individual son of theirs will have hemophilia?</div>
+            <button class="mc-option" onclick="checkMC('slq3', this, true)">50%</button>
+            <button class="mc-option" onclick="checkMC('slq3', this, false)">25%</button>
+            <button class="mc-option" onclick="checkMC('slq3', this, false)">0% &mdash; hemophilia only comes from fathers</button>
+            <button class="mc-option" onclick="checkMC('slq3', this, false)">75%</button>
+            <div class="explanation correct" id="slq3-correct">Correct! Elena (X<sup>H</sup>X<sup>h</sup>) passes either X<sup>H</sup> or X<sup>h</sup> with equal probability. Sons receive Y from James. So each son has a <strong>50% chance</strong> of being X<sup>h</sup>Y (affected) and a 50% chance of being X<sup>H</sup>Y (unaffected). Daniel is one of the sons who received X<sup>h</sup>.</div>
+            <div class="explanation incorrect" id="slq3-incorrect">Think about what the carrier mother (X<sup>H</sup>X<sup>h</sup>) can pass. She has two X chromosomes&mdash;one with the normal allele and one with the hemophilia allele. Each son gets one of these at random (plus Y from the father). That means each son has a <strong>50%</strong> chance of receiving X<sup>h</sup> and being affected.</div>
+        </div>
+
+        <!-- SLQ4 -->
+        <div class="question-block" id="slq4">
+            <div class="question-label">Sex-Linked Question 4</div>
+            <div class="question-text">What are the possible genotypes of <strong>Sophie</strong> (Elena and James&rsquo;s unaffected daughter)? Could she be a carrier? Explain your reasoning.</div>
+            <textarea class="text-input" id="slq4-input" rows="4" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('slq4')">Submit Answer</button>
+            <div class="explanation correct" id="slq4-exp">
+                <strong>Answer:</strong><br><br>
+                Elena (X<sup>H</sup>X<sup>h</sup>) &times; James (X<sup>H</sup>Y):<br><br>
+                Possible daughters:<br>
+                &bull; X<sup>H</sup>X<sup>H</sup> (unaffected, <em>not</em> a carrier) &mdash; 50% chance<br>
+                &bull; X<sup>H</sup>X<sup>h</sup> (unaffected, <em>carrier</em>) &mdash; 50% chance<br><br>
+                Sophie is unaffected, so she is either X<sup>H</sup>X<sup>H</sup> or X<sup>H</sup>X<sup>h</sup>. <strong>Yes, she could be a carrier</strong>&mdash;there is a <strong>50% probability</strong> she inherited the X<sup>h</sup> allele from her mother. Without genetic testing, we cannot tell from the pedigree alone whether Sophie is a carrier.
+            </div>
+        </div>
+
+        <!-- SLQ5 -->
+        <div class="question-block" id="slq5">
+            <div class="question-label">Sex-Linked Question 5</div>
+            <div class="question-text">Imagine Nathan (unaffected, X<sup>H</sup>Y) marries a woman who is a carrier for hemophilia (X<sup>H</sup>X<sup>h</sup>). What is the probability that their <strong>first son</strong> will have hemophilia? What about their <strong>first daughter</strong>&mdash;could she be affected?</div>
+            <textarea class="text-input" id="slq5-input" rows="5" placeholder="Type your answer here..."></textarea>
+            <button class="submit-btn" onclick="submitText('slq5')">Submit Answer</button>
+            <div class="explanation correct" id="slq5-exp">
+                <strong>Answer:</strong><br><br>
+                Cross: Nathan (X<sup>H</sup>Y) &times; Carrier woman (X<sup>H</sup>X<sup>h</sup>)<br><br>
+                <strong>Sons:</strong> Each son gets Y from Nathan and either X<sup>H</sup> or X<sup>h</sup> from the mother. So:<br>
+                &bull; 50% X<sup>H</sup>Y (unaffected)<br>
+                &bull; 50% X<sup>h</sup>Y (affected)<br>
+                Probability their first son has hemophilia = <strong>50%</strong>.<br><br>
+                <strong>Daughters:</strong> Each daughter gets X<sup>H</sup> from Nathan and either X<sup>H</sup> or X<sup>h</sup> from the mother. So:<br>
+                &bull; 50% X<sup>H</sup>X<sup>H</sup> (unaffected, not a carrier)<br>
+                &bull; 50% X<sup>H</sup>X<sup>h</sup> (unaffected, carrier)<br>
+                <strong>No daughter can be affected</strong> because Nathan always contributes X<sup>H</sup>. Every daughter gets at least one dominant allele.
+            </div>
+        </div>
+
         <!-- ===== COPY SECTION ===== -->
         <div class="copy-section">
             <h3>Copy Your Answers for Google Classroom</h3>
-            <p style="color:#555; margin-bottom:15px;">Click the button below to compile all of your answers into a format you can paste into a Google Doc or Word document for submission.</p>
+            <p style="color:#555; margin-bottom:15px;">Click the button below to compile all of your answers from every section into a format you can paste into a Google Doc or Word document for submission.</p>
             <button class="btn-copy" onclick="compileAnswers()">Compile My Answers</button>
             <button class="btn-copy green" id="copyBtn" onclick="copyToClipboard()" style="display:none;">Copy to Clipboard</button>
             <span class="copy-success" id="copySuccess">Copied to clipboard!</span>
@@ -933,7 +1261,7 @@
         </div>
 
         <div class="section-nav" style="border-top:none; margin-top:10px;">
-            <button class="nav-btn prev" onclick="showSection(2)">&larr; Practice</button>
+            <button class="nav-btn prev" onclick="showSection(4)">&larr; Sex-Linked Traits</button>
             <span></span>
         </div>
     </div>
@@ -1089,7 +1417,50 @@ function compileAnswers() {
         }
     });
 
-    if (!hasLessonAnswers && !hasPractice && !hasChallenge) {
+    // Sex-Linked Lesson Checks
+    const slLessonQs = [
+        { id: 'sl-q1', label: 'Lesson Check 4: Carrier mother x unaffected father - % sons with hemophilia?' },
+        { id: 'sl-q2', label: 'Lesson Check 5: Why are males more frequently affected by X-linked recessive disorders?' },
+        { id: 'sl-q3', label: 'Lesson Check 6: Can an affected father pass hemophilia to his sons?' }
+    ];
+
+    let hasSLLesson = false;
+    slLessonQs.forEach(q => {
+        const block = document.getElementById(q.id);
+        if (block && block.dataset.answer) {
+            if (!hasSLLesson) {
+                text += '--- SEX-LINKED LESSON CHECKS ---\n\n';
+                hasSLLesson = true;
+            }
+            text += q.label + '\n';
+            text += 'My Answer: ' + block.dataset.answer + '\n';
+            text += 'Correct: ' + (block.dataset.correct === 'true' ? 'Yes' : 'No') + '\n\n';
+        }
+    });
+
+    // Sex-Linked Pedigree Questions
+    const slPedigreeQs = [
+        { id: 'slq1', label: 'SL Q1: Genotypes of Robert and Catherine?' },
+        { id: 'slq2', label: 'SL Q2: Why is Michael affected but Thomas is not?' },
+        { id: 'slq3', label: 'SL Q3: Probability Elena\'s son has hemophilia?' },
+        { id: 'slq4', label: 'SL Q4: Sophie\'s possible genotypes - could she be a carrier?' },
+        { id: 'slq5', label: 'SL Q5: Nathan marries a carrier - probability for sons/daughters?' }
+    ];
+
+    let hasSLPedigree = false;
+    slPedigreeQs.forEach(q => {
+        const block = document.getElementById(q.id);
+        if (block && block.dataset.answer) {
+            if (!hasSLPedigree) {
+                text += '--- SEX-LINKED PEDIGREE (Pedigree 3: Robert & Catherine) ---\n\n';
+                hasSLPedigree = true;
+            }
+            text += q.label + '\n';
+            text += 'My Answer: ' + block.dataset.answer + '\n\n';
+        }
+    });
+
+    if (!hasLessonAnswers && !hasPractice && !hasChallenge && !hasSLLesson && !hasSLPedigree) {
         text += '(No answers submitted yet. Complete the lesson and practice sections first!)\n';
     }
 
